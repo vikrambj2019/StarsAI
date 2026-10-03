@@ -1,0 +1,4 @@
+# Real data never belongs in this repo. Placeholders only.
+data/real/
+*.csv.real
+.DS_Store

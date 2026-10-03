@@ -1,0 +1,4 @@
+vendor_id,vendor_name,contract_id,month,records_sent,contact_rate,gap_closure_rate,sla_status
+V-A,Vendor A,H1234,2028-06,12000,0.61,0.22,breach
+V-A,Vendor A,H1234,2028-05,11500,0.72,0.28,ok
+V-B,Vendor B,H1235,2028-06,8000,0.78,0.31,ok

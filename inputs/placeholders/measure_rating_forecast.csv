@@ -1,0 +1,6 @@
+contract_id,measure_id,year,predicted_rate,pred_interval_low,pred_interval_high
+H1234,COL,2029,0.74,0.70,0.78
+H1234,CDC_HbA1c,2029,0.73,0.69,0.77
+H1235,BCS,2029,0.68,0.63,0.73
+H1236,PDC_DIABETES,2029,0.90,0.87,0.93
+H1237,CDC_BP,2029,0.75,0.71,0.79

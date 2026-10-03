@@ -1,0 +1,9 @@
+contract_id,measure_id,measure_name,year,star_rating,raw_rate,denominator,cut_point_used
+H1234,COL,Colorectal Cancer Screening,2024,4,0.71,4200,0.68
+H1234,COL,Colorectal Cancer Screening,2025,4,0.73,4350,0.69
+H1234,CDC_HbA1c,HbA1c Control (<8.0%),2024,3,0.68,5100,0.70
+H1234,CDC_HbA1c,HbA1c Control (<8.0%),2025,4,0.72,5200,0.71
+H1235,BCS,Breast Cancer Screening,2024,2,0.61,3800,0.70
+H1235,BCS,Breast Cancer Screening,2025,3,0.66,3950,0.70
+H1236,PDC_DIABETES,Medication Adherence - Diabetes,2024,5,0.89,2900,0.85
+H1236,PDC_DIABETES,Medication Adherence - Diabetes,2025,5,0.90,3010,0.86

@@ -1,0 +1,7 @@
+program_id,program_name,lever_id,target_measure_ids,unit_cost_usd,estimated_lift_pp,lift_evidence_type,capacity_per_month
+P01,AI SMS gap reminders,ai_sms_outreach,COL|BCS|CDC_HbA1c,3.50,2.1,quasi_experimental,50000
+P02,IVR voice reminders,ivr_outreach,COL|BCS,2.80,0.4,quasi_experimental,40000
+P03,Provider P4P bonuses,provider_incentive_program,CDC_HbA1c|CDC_BP|COL,45.00,3.4,vendor_reported,999999
+P04,Chart chase + NLP screen,chart_chase_sprint,ALL_HEDIS,12.00,1.8,expert_guess,20000
+P05,NEMT ride scheduling,nemt_transport,COL|BCS|CDC_HbA1c,28.00,1.2,quasi_experimental,8000
+P06,Adherence packaging + MTM,pharmacy_adherence,PDC_DIABETES|PDC_HTN|PDC_CHOL,9.50,2.6,rct,15000

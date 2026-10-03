@@ -1,0 +1,362 @@
+# =============================================================================
+# STARS AGENTIC SYSTEM — INPUT SPECIFICATION  (v0.1)
+# Plan: Meridian Health (fictional) | Measurement year 2028 -> Stars release 2029
+# Goal: 70% of members in 4-star-plus contracts
+#
+# STATUS LEGEND
+#   HAVE         — asset already exists in your shop
+#   CAN_GET      — you said you can obtain this
+#   NEED         — still to source before production
+#   ILLUSTRATIVE — placeholder for the demo only; replace with real numbers
+#
+# DESIGN RULES
+#   1. Every constraint is enforced by BOTH the simulation engine and the agents.
+#   2. Every lever must declare: cost, expected lift + evidence basis, target
+#      measures, and which constraints it consumes.
+#   3. "Estimated lift" must be UPLIFT (caused by the program), not raw
+#      historical compliance — otherwise simulations optimize fantasy.
+# =============================================================================
+
+meta:
+  plan_name: "Meridian Health"
+  fictional: true
+  measurement_year: 2028
+  stars_release_year: 2029
+  goal: "70% of members in 4-star-plus contracts"
+  contracts_in_scope: 10
+  last_updated: "2026-10-03"
+  owner: TBD
+  data_classification: "illustrative demo data — replace before production use"
+
+# -----------------------------------------------------------------------------
+# 1. CONSTRAINTS — boundaries every simulation and agent must respect
+# -----------------------------------------------------------------------------
+constraints:
+
+  financial:
+    - id: annual_stars_budget_usd
+      name: "Annual Stars program budget"
+      value: 8500000                        # ILLUSTRATIVE
+      unit: USD
+      enforced_by: [simulation_engine, intervention_agent]
+      editable_in_demo: true
+
+    - id: max_cost_per_gap_closed_usd
+      name: "Willingness-to-pay ceiling per gap closed"
+      value: 250                             # ILLUSTRATIVE
+      unit: USD
+      note: "Levers priced above this are excluded from 'efficient' scenarios"
+
+    - id: reallocation_approval_threshold_usd
+      name: "Human approval threshold for mid-year reallocation"
+      value: 50000                           # ILLUSTRATIVE
+      unit: USD
+      note: "Agent may move money below this autonomously; above it needs a human click"
+
+  operational:
+    - id: measurement_year_close
+      name: "Measurement year hard close"
+      value: "2028-12-31"
+      note: "No gap-closing activity counts after this date; drives the countdown clock"
+
+    - id: max_touches_per_member_per_month
+      name: "Member contact cap"
+      value: 4                                # ILLUSTRATIVE
+      note: "Over-contact depresses CAHPS; enforced across all outreach levers"
+
+    - id: vendor_throughput_per_month
+      name: "Vendor throughput ceiling"
+      value: 50000                            # ILLUSTRATIVE
+      unit: records/month
+
+    - id: field_team_capacity
+      name: "Home-visit / field team capacity"
+      value: 1200                             # ILLUSTRATIVE
+      unit: visits/month
+
+  regulatory:
+    - id: cms_marketing_rules
+      name: "CMS marketing & communications rules"
+      value: true
+      note: "All member-facing content passes compliance review before send"
+
+    - id: member_incentive_cap_usd
+      name: "Max per-member reward value (CMS nominal-value rule)"
+      value: 75                               # ILLUSTRATIVE
+      unit: USD
+
+    - id: tcpa_consent_required
+      name: "TCPA prior express consent for SMS/voice"
+      value: true
+      note: "Members without consent are auto-excluded from those channels"
+
+    - id: health_equity_guardrail
+      name: "No discriminatory targeting"
+      value: true
+      note: "Simulations may not optimize by cherry-picking low-effort members"
+
+  data_and_time:
+    - id: claims_lag_months
+      name: "Claims data lag"
+      value: 3                                # ILLUSTRATIVE
+      unit: months
+      note: "Forecasts steer with stale data; the system must model the lag"
+
+    - id: forecast_refresh_cadence
+      name: "Forecast refresh cadence"
+      value: "monthly"
+
+    - id: vendor_sla_contact_rate
+      name: "Minimum vendor contact rate SLA"
+      value: 0.70
+      note: "Breaches flip the vendor tile amber and trigger review"
+
+# -----------------------------------------------------------------------------
+# 2. LEVERS — everything the system is allowed to pull, with honest pricing
+#    Replace ILLUSTRATIVE costs/lifts with your program catalog (CAN_GET).
+# -----------------------------------------------------------------------------
+levers:
+
+  - id: ai_sms_outreach
+    name: "AI SMS outreach"
+    category: member_engagement
+    description: "Two-way SMS gap reminders with scheduling links"
+    annual_cost_usd: 420000                   # ILLUSTRATIVE
+    expected_lift_pp: 2.1                     # ILLUSTRATIVE
+    lift_evidence: NEED
+    target_measure_ids: [COL, BCS, CDC_HbA1c]
+    consumes: [annual_stars_budget_usd, max_touches_per_member_per_month, tcpa_consent_required]
+
+  - id: ivr_outreach
+    name: "IVR voice outreach"
+    category: member_engagement
+    description: "Automated voice calls for gap reminders"
+    annual_cost_usd: 310000                   # ILLUSTRATIVE
+    expected_lift_pp: 0.4                     # ILLUSTRATIVE — demo shows this as NOT significant
+    lift_evidence: NEED
+    target_measure_ids: [COL, BCS]
+    consumes: [annual_stars_budget_usd, max_touches_per_member_per_month, tcpa_consent_required]
+    note: "Candidate for defunding if uplift is not significant (see Act 2 demo beat)"
+
+  - id: provider_incentive_program
+    name: "Provider pay-for-performance"
+    category: provider
+    description: "Gap-closure bonuses paid to provider groups"
+    annual_cost_usd: 1800000                  # ILLUSTRATIVE
+    expected_lift_pp: 3.4                     # ILLUSTRATIVE
+    lift_evidence: NEED
+    target_measure_ids: [CDC_HbA1c, CDC_BP, COL, BCS]
+    consumes: [annual_stars_budget_usd]
+
+  - id: chart_chase_sprint
+    name: "Chart chase sprint"
+    category: data_quality
+    description: "Targeted retrieval + NLP pre-screen + supplemental data submission"
+    annual_cost_usd: 650000                   # ILLUSTRATIVE
+    expected_lift_pp: 1.8                     # ILLUSTRATIVE — via exclusions + found documentation
+    lift_evidence: NEED
+    target_measure_ids: [ALL_HEDIS]
+    consumes: [annual_stars_budget_usd]
+
+  - id: denominator_exclusion_review
+    name: "Denominator exclusion review"
+    category: data_quality
+    description: "Hospice / advanced-illness / frailty exclusions per HEDIS specs"
+    annual_cost_usd: 180000                   # ILLUSTRATIVE
+    expected_lift_pp: 0.9                     # ILLUSTRATIVE — shrinks denominator, not numerator
+    lift_evidence: NEED
+    target_measure_ids: [ALL_HEDIS]
+    consumes: [annual_stars_budget_usd]
+
+  - id: nemt_transport
+    name: "Transportation (NEMT)"
+    category: barrier_removal
+    description: "Rides to appointments for gap-closure visits"
+    annual_cost_usd: 380000                   # ILLUSTRATIVE
+    expected_lift_pp: 1.2                     # ILLUSTRATIVE
+    lift_evidence: NEED
+    target_measure_ids: [COL, BCS, CDC_HbA1c, EYE]
+    consumes: [annual_stars_budget_usd]
+
+  - id: pharmacy_adherence
+    name: "Pharmacy adherence program"
+    category: pharmacy
+    description: "90-day fills, adherence packaging, MTM outreach"
+    annual_cost_usd: 520000                   # ILLUSTRATIVE
+    expected_lift_pp: 2.6                     # ILLUSTRATIVE
+    lift_evidence: NEED
+    target_measure_ids: [PDC_DIABETES, PDC_HTN, PDC_CHOL]
+    consumes: [annual_stars_budget_usd]
+
+  - id: home_visit_pilot
+    name: "Home-visit pilot"
+    category: member_engagement
+    description: "In-home gap closure visits (screenings, vitals, meds review)"
+    annual_cost_usd: 900000                   # ILLUSTRATIVE
+    expected_lift_pp: 1.5                     # ILLUSTRATIVE
+    lift_evidence: NEED
+    target_measure_ids: [CDC_HbA1c, CDC_BP, COL]
+    consumes: [annual_stars_budget_usd, field_team_capacity]
+
+  - id: cahps_call_center_surge
+    name: "CAHPS call-center surge"
+    category: member_experience
+    description: "Staffing + training surge ahead of CAHPS/HOS survey windows"
+    annual_cost_usd: 750000                   # ILLUSTRATIVE
+    expected_lift_pp: 1.1                     # ILLUSTRATIVE — moves experience measures
+    lift_evidence: NEED
+    target_measure_ids: [CAHPS_COMPOSITES, HOS]
+    consumes: [annual_stars_budget_usd]
+
+  - id: ehr_gap_alerts
+    name: "EHR point-of-care gap alerts"
+    category: provider
+    description: "Real-time gap flags inside provider workflow"
+    annual_cost_usd: 240000                   # ILLUSTRATIVE
+    expected_lift_pp: 1.4                     # ILLUSTRATIVE
+    lift_evidence: NEED
+    target_measure_ids: [ALL_HEDIS]
+    consumes: [annual_stars_budget_usd]
+
+  - id: member_rewards
+    name: "Member rewards for gap closure"
+    category: member_engagement
+    description: "Gift cards for completed screenings/visits"
+    annual_cost_usd: 600000                   # ILLUSTRATIVE
+    expected_lift_pp: 1.7                     # ILLUSTRATIVE
+    lift_evidence: NEED
+    target_measure_ids: [COL, BCS, AWV]
+    consumes: [annual_stars_budget_usd, member_incentive_cap_usd, cms_marketing_rules]
+
+# -----------------------------------------------------------------------------
+# 3. INPUT FILES & MODEL INTERFACES — what makes the demo "real"
+#    Your four existing assets map 1:1 onto the system. The NEED items are the
+#    gaps to close before production.
+# -----------------------------------------------------------------------------
+
+input_files:
+
+  # --- YOU HAVE THESE -------------------------------------------------------
+  - id: hist_contract_measure_ratings
+    file: data/historical/contract_measure_ratings_5yr.csv
+    status: HAVE
+    grain: "contract x measure x year (5 years)"
+    key_columns: [contract_id, measure_id, measure_name, year,
+                  star_rating, raw_rate, denominator, cut_point_used]
+    feeds: [forecasting_agent, cutpoint_agent, simulation_engine]
+    note: "Backtesting gold: 'would our 2024 plan have predicted 2025?' Calibrate everything against this."
+
+  - id: cutpoint_forecast
+    source: "Your cut-point prediction model (outputs a RANGE per measure)"
+    status: HAVE
+    grain: "measure x year"
+    key_columns: [measure_id, year, cut_low, cut_high, p_clear_4star]
+    feeds: [cutpoint_agent, simulation_engine]
+    note: "The single most leveraged input: a range becomes P(measure clears the 4-star bar)."
+
+  - id: measure_rating_forecast
+    source: "Your contract measure-rating forecast model"
+    status: HAVE
+    grain: "contract x measure x year"
+    key_columns: [contract_id, measure_id, year, predicted_rate,
+                  pred_interval_low, pred_interval_high]
+    feeds: [forecasting_agent]
+    note: "Middle layer of the bottom-up forecast: member -> measure -> contract."
+
+  - id: montecarlo_contract_stars
+    source: "Your Monte Carlo contract star-rating simulation"
+    status: HAVE
+    grain: "contract x year x simulation run"
+    key_columns: [contract_id, year, run_id,
+                  simulated_overall_star, simulated_measure_stars]
+    feeds: [simulation_engine]
+    note: "This IS the demo's '10,000 simulations' core. Levers enter as shifts to the input distributions."
+
+  # --- YOU CAN GET THESE ----------------------------------------------------
+  - id: program_catalog
+    source: "Program owners / vendors"
+    status: CAN_GET
+    grain: "program x measure"
+    key_columns: [program_id, program_name, lever_id, target_measure_ids,
+                  unit_cost_usd, estimated_lift_pp, lift_evidence_type,
+                  capacity_per_month]
+    feeds: [intervention_agent, simulation_engine]
+    note: "Turns the lever library from ILLUSTRATIVE to real. lift_evidence_type must be one of: rct | quasi_experimental | vendor_reported | expert_guess — simulations discount accordingly."
+
+  # --- STILL NEEDED ----------------------------------------------------------
+  - id: member_gap_snapshot
+    status: NEED
+    grain: "member x measure (monthly snapshot)"
+    key_columns: [member_id, contract_id, measure_id, gap_open,
+                  predicted_compliance_prob, uplift_score, preferred_channel,
+                  consent_sms, consent_voice, language, sdoh_flags]
+    feeds: [forecasting_agent, intervention_agent]
+    note: "Without this, targeting is guesswork. uplift_score (not just propensity) is what makes interventions efficient."
+
+  - id: vendor_master
+    status: NEED
+    grain: "vendor x contract x month"
+    key_columns: [vendor_id, vendor_name, contract_id, month,
+                  records_sent, contact_rate, gap_closure_rate, sla_status]
+    feeds: [vendor_orchestrator]
+    note: "Powers the Act 2 vendor SLA beat (61% vs 70% contact rate)."
+
+  - id: provider_attribution
+    status: NEED
+    grain: "provider_group x contract x measure x month"
+    key_columns: [provider_group_id, provider_name, contract_id, measure_id,
+                  open_gaps, gaps_closed_60d, incentive_earned_usd]
+    feeds: [provider_watchdog]
+    note: "Powers the 'Dr. Smith's group: 212 open gaps, 0 closures' escalation."
+
+  - id: supplemental_data_feeds
+    status: NEED
+    grain: "varies by source"
+    key_columns: [source_name, feed_type, refresh_cadence, measures_covered]
+    note: "Lab feeds, immunization registries, HIE — what chart chase can actually find."
+
+# -----------------------------------------------------------------------------
+# 4. MODEL INTERFACES — the contract between your models and the agents
+# -----------------------------------------------------------------------------
+model_interfaces:
+
+  cutpoint_model:
+    owned_by: "your team (HAVE)"
+    input: [measure_id, year, historical_cutpoints, cms_rule_changes]
+    output: {cut_low: float, cut_high: float, distribution: "samples[]"}
+    consumed_by: cutpoint_agent
+    produces: "P(measure clears 4-star cut) per measure per year"
+
+  measure_forecast_model:
+    owned_by: "your team (HAVE)"
+    input: [contract_id, measure_id, year, hist_contract_measure_ratings, member_mix]
+    output: {predicted_rate: float, interval_low: float, interval_high: float}
+    consumed_by: forecasting_agent
+    produces: "Measure-level forecast (middle of the roll-up)"
+
+  monte_carlo_engine:
+    owned_by: "your team (HAVE)"
+    input: [measure_forecasts, cutpoint_distributions, lever_scenarios]
+    output: "distribution over contract star outcomes per run"
+    consumed_by: simulation_engine
+    produces: "The 10,000-run scenario fan the demo visualizes"
+
+  uplift_model:
+    owned_by: TBD
+    input: [member_gap_snapshot, program_catalog]
+    output: {uplift_score: float}
+    consumed_by: intervention_agent
+    produces: "Who benefits from WHICH intervention — the targeting brain"
+    status: NEED
+    note: "The one model you don't have yet, and the highest-leverage build."
+
+# -----------------------------------------------------------------------------
+# 5. OPEN QUESTIONS — resolve before production
+# -----------------------------------------------------------------------------
+open_questions:
+  - "Do we have member-level predicted compliance today, or only contract/measure aggregates?"
+  - "Who blesses the program catalog's lift estimates — actuarial, clinical, or vendor-reported? (Simulations must discount accordingly.)"
+  - "Who approves vendor file transfers containing PHI — what is the compliance sign-off workflow?"
+  - "What is the REAL annual budget, and who can reallocate mid-year without committee?"
+  - "Which contracts are candidates for the 'triage' scenario vs. multi-year rebuild?"
+  - "Do we have uplift/causal estimates for any program today, or only pre/post compliance deltas?"

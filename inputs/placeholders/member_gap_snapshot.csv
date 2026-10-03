@@ -1,0 +1,6 @@
+member_id,contract_id,measure_id,gap_open,predicted_compliance_prob,uplift_score,preferred_channel,consent_sms,consent_voice,language,sdoh_flags
+M-000001,H1234,COL,1,0.32,0.18,SMS,1,1,en,transportation
+M-000002,H1234,CDC_HbA1c,1,0.55,0.06,voice,0,1,es,
+M-000003,H1235,BCS,1,0.21,0.24,SMS,1,1,en,transportation|food
+M-000004,H1235,BCS,0,0.91,0.01,SMS,1,1,en,
+M-000005,H1236,PDC_DIABETES,1,0.44,0.12,app,1,0,en,

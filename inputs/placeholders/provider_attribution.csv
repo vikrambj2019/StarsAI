@@ -1,0 +1,4 @@
+provider_group_id,provider_name,contract_id,measure_id,open_gaps,gaps_closed_60d,incentive_earned_usd
+PG-101,Smith Medical Group,H1234,CDC_HbA1c,212,0,0
+PG-102,Lakeside Clinic,H1234,COL,88,41,12500
+PG-103,Bayview Associates,H1235,BCS,145,62,18300

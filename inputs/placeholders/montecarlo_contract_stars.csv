@@ -1,0 +1,7 @@
+contract_id,year,run_id,simulated_overall_star,simulated_measure_stars
+H1234,2029,1,4.0,"COL:4|CDC_HbA1c:4|BCS:3"
+H1234,2029,2,3.5,"COL:4|CDC_HbA1c:3|BCS:3"
+H1234,2029,3,4.0,"COL:5|CDC_HbA1c:4|BCS:4"
+H1235,2029,1,3.0,"BCS:3|COL:3|CDC_BP:3"
+H1235,2029,2,3.5,"BCS:4|COL:3|CDC_BP:4"
+H1236,2029,1,5.0,"PDC_DIABETES:5|PDC_HTN:5|PDC_CHOL:4"
